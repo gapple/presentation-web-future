@@ -7,9 +7,11 @@
 
   <title>Web of the Future</title>
 
+  <link rel="stylesheet" href="lib/css/font-awesome.min.css">
   <link rel="stylesheet" href="css/reveal.css">
   <link rel="stylesheet" href="css/theme/moon.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/slides.css">
 
 
   <!-- Theme used for syntax highlighting of code -->
@@ -27,33 +29,43 @@
 <body>
 <div class="reveal">
   <div class="slides">
-    <section id="title">
-      <h1>Web of the Future</h1>
-      <h2>Better Faster Stronger</h2>
-      <h3>Geoff Appleby</h3>
-      <h4>Pacific Northwest Drupal Summit 2017</h4>
-    </section>
-    <section id="about" data-background="images/eaglebluffs.jpg">
-      <aside>
-        <h2>Geoff Appleby</h2>
-        <ul class="accounts">
-          <li><span class="subtle">drupal.org/u/</span>gapple</li>
-          <li><span class="subtle">twitter.com/</span>@gappleca</li>
-        </ul>
-        <ul class="projects">
-          <li>gacsp: Google Analytics</li>
-          <li>Persistent Login</li>
-          <li>DrupalReleaseDate.com</li>
-        </ul>
-      </aside>
-    </section>
-    <section id="myplanet" data-background="#ed5b33">
-      <img class="logo" src="images/myplanet-logo.png"/>
-      <div class="locations">
-        <img src="images/myplanet-vancouver.png"/>
-        <img src="images/myplanet-toronto.png"/>
-        <img src="images/myplanet-cherniv.png"/>
-      </div>
+    <section>
+      <section id="title"
+               class="center"
+               data-transition="fade">
+        <h1>Web of the Future</h1>
+        <h2>Better Faster Stronger</h2>
+        <h3>Geoff Appleby</h3>
+        <h4>Pacific Northwest Drupal Summit 2017</h4>
+      </section>
+      <section id="about"
+               class="center"
+               data-background-image="images/eaglebluffs.jpg"
+               data-transition="slide">
+        <aside>
+          <h2>Geoff Appleby</h2>
+          <ul class="accounts">
+            <li class="drupal"><a href="https://www.drupal.org/u/gapple"><i class="fa fa-drupal"></i> <span>gapple</span></a></li>
+            <li class="twitter"><a href="https://twitter.com/gappleca"><i class="fa fa-twitter"></i> <span>gappleca</span></a></li>
+          </ul>
+          <ul class="projects">
+            <li><a href="https://www.drupal.org/project/gacsp">gacsp: Google Analytics</a></li>
+            <li><a href="https://www.drupal.org/project/persistent_login">Persistent Login</a></li>
+            <li><a href="https://drupalreleasedate.com">DrupalReleaseDate.com</a></li>
+          </ul>
+        </aside>
+      </section>
+      <section id="myplanet"
+               class="center"
+               data-background="#ed5b33"
+               data-transition="fade">
+        <img class="logo" src="images/myplanet-logo.png"/>
+        <div class="locations">
+          <img src="images/myplanet-vancouver.png"/>
+          <img src="images/myplanet-toronto.png"/>
+          <img src="images/myplanet-cherniv.png"/>
+        </div>
+      </section>
     </section>
   </div>
 </div>
@@ -66,7 +78,15 @@
   Reveal.initialize({
     width: 1280,
     height: 720,
+    center: false,
+    transition: 'fade',
     history: true,
+
+    // Arrow keys progress through sub-slides
+    keyboard: {
+      39: 'next', // right key
+      37: 'prev'  // left key
+    },
 
     // More info https://github.com/hakimel/reveal.js#dependencies
     dependencies: [
@@ -76,6 +96,23 @@
       {
         src: 'plugin/highlight/highlight.js',
         async: true,
+        condition: function () {
+          // Trim whitespace from code blocks, and prevent HTML escaping by default.
+          // This must be done before the plugin is loaded.
+          Array.prototype.forEach.call(
+            document.querySelectorAll('pre code'),
+            function (element) {
+              if (! element.hasAttribute('data-notrim')) {
+                element.setAttribute('data-trim', '');
+              }
+              if (! element.hasAttribute('data-escape')) {
+                element.setAttribute('data-noescape', '');
+              }
+            }
+          );
+
+          return true;
+        },
         callback: function () {
           hljs.initHighlightingOnLoad();
         }
