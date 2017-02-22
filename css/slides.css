@@ -89,3 +89,10 @@
   width: 12%;
   height: 12%;
 }
+
+#source ul {
+  list-style: none;
+}
+#source li {
+  text-align: center;
+}
