@@ -69,15 +69,967 @@
       </section>
     </section>
 
+    <section>
+      <section id="h2-title">
+        <h1>HTTP/2</h1>
+        <!-- https://pixabay.com/en/unicorn-armor-fantasy-fairy-tale-2047233/ -->
+        <img class="fragment" src="images/unicorn_armour.png"/>
+      </section>
+      <section id="h2-support">
+        <h2>Support</h2>
+        <div class="columns">
+          <div class="column">
+            <h3>Browsers</h3>
+            <ul>
+              <li>Chrome</li>
+              <li>Firefox</li>
+              <li>Safari 9*</li>
+              <li>IE 11*</li>
+              <li>Edge</li>
+            </ul>
+          </div>
+          <div class="column">
+            <h3>Servers</h3>
+            <ul>
+              <li>Apache 2.4*</li>
+              <li>Nginx 1.9.5</li>
+              <li>Varnish 5.0</li>
+            </ul>
+          </div>
+          <div class="column">
+            <h3>CDNs</h3>
+            <ul>
+              <li>Cloudflare</li>
+              <li>Akamai</li>
+              <li>Cloudfront</li>
+              <li>Fastly</li>
+            </ul>
+          </div>
+        </div>
+        <aside class="notes" data-markdown>
+          - FF 36 (Feb 2015)
+          - Chrome 41 (Mar 2015)
+          - IE: Win 10
+          - Safari: 10.11+ (El Capitan, Sep 2015)
 
+          - Apache experimental module
+          - not in Ubuntu repositories yet
+          - Nginx configuration
+          - Varnish configuration
+        </aside>
+      </section>
+    </section>
+    <section>
+      <section id="h2-negotiation">
+        <h2>ALPN Negotiation</h2>
+        <div class="conversation">
+          <blockquote class="fragment"><i class="fa fa-desktop"></i> "Hey, I'd like to talk to you with TLS and HTTP/2"</blockquote>
+          <blockquote class="fragment"><i class="fa fa-server"></i>"Okay, let's talk with TLS and HTTP/2"</blockquote>
+          <blockquote class="fragment"><i class="fa fa-desktop"></i> "Can you send me index.html over HTTP/2?"</blockquote>
+        </div>
+
+        <aside class="notes" data-markdown>
+          - Application Layer Protocol Negotiation
+          - Sends extra information in connection request
+            - Similar to Server Name Indication
+        </aside>
+      </section>
+      <section id="h2-negotiation-not-supported">
+        <h2><strike>ALPN</strike> Negotiation</h2>
+        <div class="conversation">
+          <blockquote><i class="fa fa-desktop"></i> "Hey, I'd like to talk to you with TLS and HTTP/2"</blockquote>
+          <blockquote class="fragment"><i class="fa fa-server"></i>"Okay, let's talk with TLS"</blockquote>
+          <blockquote class="fragment"><i class="fa fa-desktop"></i> "Can you send me index.html with HTTP 1.1?"</blockquote>
+        </div>
+      </section>
+
+      <aside class="notes" data-markdown>
+        - Safely falls back to HTTP 1.1
+      </aside>
+    </section>
 
     <section>
-      <section id="source" class="center">
+      <section id="h2-connections-http1">
+        <div class="wrapper">
+          <h2>HTTP 1</h2>
+          <div class="streams-figure h1">
+            <div class="endpoint"><i class="fa fa-desktop"></i></div>
+            <div class="transfer">
+              <div class="connection">
+                <div class="request"><span>GET /index.html</span> <i class="fa fa-arrow-right"></i></div>
+                <div class="response"><i class="fa fa-arrow-left"></i> <span>index.html</span></div>
+              </div>
+              <div class="connection">
+                <div class="request"><span>GET /styles.css</span> <i class="fa fa-arrow-right"></i></div>
+                <div class="response"><i class="fa fa-arrow-left"></i> <span>style.css</span></div>
+              </div>
+              <div class="connection">
+                <div class="request"><span>GET /scripts.js</span> <i class="fa fa-arrow-right"></i></div>
+                <div class="response"><i class="fa fa-arrow-left"></i> <span>scripts.js</span></div>
+              </div>
+              <div class="connection">
+                <div class="request"><span>GET /image1.png</span> <i class="fa fa-arrow-right"></i></div>
+                <div class="response"><i class="fa fa-arrow-left"></i> <span>image1.png</span></div>
+              </div>
+            </div>
+            <div class="endpoint"><i class="fa fa-server"></i></div>
+          </div>
+        </div>
+
+        <aside class="notes" data-markdown>
+          - Connections have overhead to setup
+          - Limit on open connections (6-8)
+        </aside>
+      </section>
+      <section>
+        <h2>HTTP 1.1 Hacks</h2>
         <ul>
-          <li><a href="https://gapple.github.io/presentation-web-future">https://gapple.github.io/presentation-web-future</a></li>
-          <li><a href="https://github.com/gapple/presentation-web-future">https://github.com/gapple/presentation-web-future</a></li>
+          <li>Keep-Alive</li>
+          <li>Sharding</li>
+          <li>Concatenation</li>
+          <li>Sprites & Icon Fonts</li>
+        </ul>
+
+        <aside class="notes" data-markdown>
+          - Mitigate expense of connection setup
+          - Mitigate limit on open connections
+          -
+          - Font Awesome; 100kb for seven icons in this presentation
+        </aside>
+      </section>
+      <section id="h2-connections-http2">
+        <div class="wrapper">
+          <h2>HTTP/2</h2>
+          <div class="streams-figure h2">
+            <div class="endpoint"><i class="fa fa-desktop"></i></div>
+            <div class="transfer">
+              <div class="connection">
+                <div class="requests">
+                  <i class="fa fa-arrow-right"></i>
+                  <div class="frame">
+                    <div class="type"></div>
+                    <div class="content">GET /index.html</div>
+                    <div class="streamid">1</div>
+                  </div>
+                  <div class="frame">
+                    <div class="type"></div>
+                    <div class="content">GET /style.css</div>
+                    <div class="streamid">3</div>
+                  </div>
+                  <div class="frame">
+                    <div class="type"></div>
+                    <div class="content">GET /scripts.js</div>
+                    <div class="streamid">5</div>
+                  </div>
+                  <div class="frame">
+                    <div class="type"></div>
+                    <div class="content">GET /image1.png</div>
+                    <div class="streamid">7</div>
+                  </div>
+                </div>
+                <div class="responses">
+                  <i class="fa fa-arrow-left"></i>
+                  <div class="frame">
+                    <div class="type">Headers</div>
+                    <div class="content">index.html</div>
+                    <div class="streamid">2</div>
+                  </div>
+                  <div class="frame">
+                    <div class="type">Data</div>
+                    <div class="content">index.html</div>
+                    <div class="streamid">2</div>
+                  </div>
+                  <div class="frame">
+                    <div class="type">Headers</div>
+                    <div class="content">style.css</div>
+                    <div class="streamid">4</div>
+                  </div>
+                  <div class="frame">
+                    <div class="type">Data</div>
+                    <div class="content">style.css</div>
+                    <div class="streamid">4</div>
+                  </div>
+                  <div class="frame">
+                    <div class="type">Headers</div>
+                    <div class="content">scripts.js</div>
+                    <div class="streamid">6</div>
+                  </div>
+                  <div class="frame">
+                    <div class="type">Data</div>
+                    <div class="content">scripts.js</div>
+                    <div class="streamid">6</div>
+                  </div>
+                  <div class="frame">
+                    <div class="type">Headers</div>
+                    <div class="content">image1.png</div>
+                    <div class="streamid">8</div>
+                  </div>
+                  <div class="frame">
+                    <div class="type">Data [0]</div>
+                    <div class="content">image1.png</div>
+                    <div class="streamid">8</div>
+                  </div>
+                  <div class="frame">
+                    <div class="type">Data [1]</div>
+                    <div class="content">image1.png</div>
+                    <div class="streamid">8</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="endpoint"><i class="fa fa-server"></i></div>
+          </div>
+        </div>
+
+        <aside class="notes" data-markdown>
+          - Single connection reduces overhead
+            - Bigger benefit on high-latency connections
+          - Greater concurrency (min 100)
+        </aside>
+      </section>
+      <section id="h2-prioritization">
+        <h2>Prioritization</h2>
+        <ol>
+          <li>HTML</li>
+          <li>CSS</li>
+          <li>JavaScript</li>
+          <li>Images</li>
+        </ol>
+      </section>
+      <section id="h2-prioritization-chrome">
+        <h2>Prioritization</h2>
+        <ul class="h2-priorities">
+          <li><span class="priority">256</span> HTML
+          <li><span class="priority">220</span> CSS</li>
+          <li><span class="priority">183</span> Header JavaScript</li>
+          <li><span class="priority">183</span> Footer Javascript</li>
+          <li><span class="priority">110</span> Images</li>
+        </ul>
+
+        <aside class="notes" data-markdown>
+          - Browser is in control of priorities
+          - Implementations differ, may change
+        </aside>
+      </section>
+      <section id="h2-prioritization-firefox">
+        <h2>Prioritization</h2>
+        <ul class="h2-priorities">
+          <li><span class="priority">201</span> [Primary Content]
+            <ul>
+              <li><span class="priority">1</span> [Secondary Content]
+                <ul>
+                  <li><span class="priority">32</span> HTML</li>
+                  <li class="fragment" data-fragment-index="2"><span class="priority">22</span> Images</li>
+                </ul></li>
+              <li class="fragment" data-fragment-index="1"><span class="priority">32</span> CSS</li>
+              <li class="fragment" data-fragment-index="1"><span class="priority">32</span> Header JavaScript</li>
+            </ul>
+          </li>
+          <li><span class="priority">101</span> [Tertiary Content]
+            <ul>
+              <li class="fragment" data-fragment-index="2"><span class="priority">183</span> Footer Javascript</li>
+            </ul>
+          </li>
+        </ul>
+
+        <aside class="notes" data-markdown>
+          - Firefox sets up dependency tree
+          - Dependencies are not strict (can start before dependency complete)
+        </aside>
+      </section>
+    </section>
+    <section>
+      <section id="h2-hpack">
+        <h2>HPACK</h2>
+        <table class="static-header-table">
+          <tr><th>Code</th><th>Name</th><th>Value</th></tr>
+          <tr><td>1 </td><td>:authority     </td><td></td>             </tr>
+          <tr><td>2 </td><td>:method        </td><td>GET          </td></tr>
+          <tr><td>3 </td><td>:method        </td><td>POST         </td></tr>
+          <tr><td>4 </td><td>:path          </td><td>/            </td></tr>
+          <tr><td>5 </td><td>:path          </td><td>/index.html  </td></tr>
+          <tr><td>6 </td><td>:scheme        </td><td>http         </td></tr>
+          <tr><td>7 </td><td>:scheme        </td><td>https        </td></tr>
+          <tr><td>8 </td><td>:status        </td><td>200          </td></tr>
+          <tr><td>9 </td><td>:status        </td><td>204          </td></tr>
+          <tr><td>10</td><td>:status        </td><td>206          </td></tr>
+          <tr><td>11</td><td>:status        </td><td>304          </td></tr>
+          <tr><td>12</td><td>:status        </td><td>400          </td></tr>
+          <tr><td>13</td><td>:status        </td><td>404          </td></tr>
+          <tr><td>14</td><td>:status        </td><td>500          </td></tr>
+          <tr><td>15</td><td>accept-charset </td><td></td>             </tr>
+          <tr><td>16</td><td>accept-encoding</td><td>gzip, deflate</td></tr>
+          <tr><td>17</td><td>accept-language</td><td></td>             </tr>
+          <tr><td>18</td><td>accept-ranges  </td><td></td>             </tr>
+          <tr><td>19</td><td>accept         </td><td></td>             </tr>
+        </table>
+        <aside class="notes" data-markdown>
+          - Static table reduces data sent for common values
+          - Dynamic table
+        </aside>
+      </section>
+    </section>
+    <section>
+      <section id="h2-server-push">
+        <h2>Server Push</h2>
+        <div class="conversation">
+          <blockquote class="fragment"><i class="fa fa-desktop"></i> "Can you send me index.html over HTTP/2?"</blockquote>
+          <blockquote class="fragment"><i class="fa fa-server"></i>"Okay, here is index.html"</blockquote>
+          <blockquote class="fragment"><i class="fa fa-server"></i>"You'll also need styles.css"</blockquote>
+          <blockquote class="fragment"><i class="fa fa-server"></i>"Here is styles.css"</blockquote>
+        </div>
+      </section>
+      <section class="center">
+        <h2>What should we push?</h2>
+        <h2 class="fragment">¯\_(ツ)_/¯</h2>
+      </section>
+      <section data-background-image="images/module_http2_server_push.png"></section>
+    </section>
+    <section>
+      <section id="h2-concerns">
+        <h2>Concerns</h2>
+        <ul>
+          <li class="fragment">Server Push versus Browser Cache</li>
+          <li class="fragment">Excessive Multiplexing</li>
+          <li class="fragment">Packet Loss</li>
         </ul>
       </section>
+
+      <aside class="notes" data-markdown>
+        - Downloading 100 images means all could be (slightly) slower
+          - Data for not visible images transferred before visible images complete
+        - Packet loss limits connection speed
+          - Impacts one connection greater than sum of multiple connections
+          - Comparable at 1%, HTTP 1.1 wins at 2%
+          - Testing used random packet loss; worst case scenario
+          - Real world packet loss may have less impact
+      </aside>
+    </section>
+    <section>
+      <h2>Best Practices</h2>
+      <ul>
+        <li>Limit sharding</li>
+        <li>Still concatenate</li>
+        <li>Limit server push</li>
+      </ul>
+      <aside class="notes">
+        - Limit to content & asset domain
+        - Concatenate related assets
+          - Drupal's strategy may win here
+      </aside>
+    </section>
+    <section>
+      <h1>QUIC</h1>
+      <ul class="fragment">
+        <li>UDP</li>
+        <li>Only supported by Chrome & Google</li>
+      </ul>
+
+      <aside class="notes" data-markdown>
+        UDP based
+        Supported by Chrome
+      </aside>
+    </section>
+
+
+    <!-- Security Warnings -->
+    <section>
+      <section class="center">
+        <img src="images/password-warning.png" />
+      </section>
+      <section class="center">
+        <img src="images/security-indicator-1.png" /><br/>
+        <img class="fragment" src="images/security-indicator-2.png" />
+      </section>
+    </section>
+
+    <!-- Let's Encrypt -->
+    <section>
+      <section id="lets-encrypt" data-background="#eee">
+        <img src="images/le-logo-standard.svg" height="500"/>
+      </section>
+      <section>
+        <h2>Let's Encrypt</h2>
+        <ul>
+          <li>Free TLS certificates</li>
+          <li>Automated</li>
+          <li>Short Lifetime</li>
+        </ul>
+
+        <aside class="notes" data-markdown>
+          - valid for 3 months, renew after 2
+        </aside>
+      </section>
+      <section>
+        <img src="images/le-stats.png" />
+      </section>
+      <section>
+        <figure class="code">
+          <pre><code>
+            $ sudo apt-get certbot
+            $ sudo certbot certonly --webroot -w /var/www/ -d example.com -d www.example.com
+            $ sudo certbot renew --quiet --no-self-upgrade
+          </code></pre>
+        </figure>
+
+        <aside class="notes">
+          -
+        </aside>
+      </section>
+    </section>
+
+    <section>
+      <section id="hsts">
+        <h2>Strict Transport Security</h2>
+        <figure class="code">
+          <pre><code data-noescape>
+            Strict-Transport-Security: max-age=31536000
+
+            Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+            Strict-Transport-Security: max-age=31536000; preload <i class="fa fa-warning" style="position: absolute; left: -30px; font-size: 80%; margin-top: 6px;"></i>
+          </code></pre>
+        </figure>
+
+        <aside class="notes" data-markdown>
+          - Next visit replace HTTP with HTTPS
+          - Cached for time specified
+        </aside>
+      </section>
+      <section>
+        <h2>Strict Transport Security</h2>
+        <table class="browser-support">
+          <tr>
+            <th><i class="fa fa-firefox"></i></th>
+            <th><i class="fa fa-chrome"></i></th>
+            <th><i class="fa fa-internet-explorer"></i></th>
+            <th><i class="fa fa-safari"></i></th>
+          </tr>
+          <tr>
+            <td><i class="fa fa-check"></i></td>
+            <td><i class="fa fa-check"></i></td>
+            <td>11</td>
+            <td><i class="fa fa-check"></i></td>
+          </tr>
+        </table>
+      </section>
+    </section>
+    <section>
+      <section id="hpkp">
+        <h2>Public Key Pinning</h2>
+        <figure class="code">
+          <pre><code>
+            Public-Key-Pins:
+              pin-sha256="cUPcTAZWKaASuYWhhneDttWpY3oBAkE3h2+soZS7sWs=";
+              pin-sha256="M8HztCzM3elUxkcjR2S5P4hhyBNf6lHkmjAHKhpGPWE=";
+              max-age=5184000
+
+            Public-Key-Pins-Report-Only:
+              pin-sha256="cUPcTAZWKaASuYWhhneDttWpY3oBAkE3h2+soZS7sWs=";
+              pin-sha256="M8HztCzM3elUxkcjR2S5P4hhyBNf6lHkmjAHKhpGPWE=";
+              max-age=5184000
+          </code></pre>
+        </figure>
+      </section>
+      <section>
+        <h2>Public Key Pinning</h2>
+        <table class="browser-support">
+          <tr>
+            <th><i class="fa fa-firefox"></i></th>
+            <th><i class="fa fa-chrome"></i></th>
+            <th><i class="fa fa-internet-explorer"></i></th>
+            <th><i class="fa fa-safari"></i></th>
+          </tr>
+          <tr>
+            <td><i class="fa fa-check"></i></td>
+            <td><i class="fa fa-check"></i></td>
+            <td><i class="fa fa-times"></i></td>
+            <td><i class="fa fa-times"></i></td>
+          </tr>
+        </table>
+      </section>
+    </section>
+
+    <section>
+      <section>
+        <h2>Referrer Policy</h2>
+        <figure class="code">
+          <pre><code>
+            Referrer-Policy: no-referrer-when-downgrade
+
+            <span class="fragment">Referrer-Policy: no-referrer</span>
+
+            <span class="fragment">Referrer-Policy: same-origin</span>
+
+            <span class="fragment">Referrer-Policy: strict-origin-when-cross-origin</span>
+          </code></pre>
+        </figure>
+      </section>
+      <section>
+        <h2>Referrer Policy</h2>
+        <table class="browser-support">
+          <tr>
+            <th><i class="fa fa-firefox"></i></th>
+            <th><i class="fa fa-chrome"></i></th>
+            <th><i class="fa fa-internet-explorer"></i></th>
+            <th><i class="fa fa-safari"></i></th>
+          </tr>
+          <tr>
+            <td>50</td>
+            <td>56</td>
+            <td><i class="fa fa-times"></i></td>
+            <td><i class="fa fa-times"></i></td>
+          </tr>
+        </table>
+      </section>
+    </section>
+
+    <!-- Content Security Policy -->
+    <section>
+      <section>
+        <h2>Content Security Policy</h2>
+        <figure class="code">
+          <pre><code>
+            Content-Security-Policy: default-src 'self'
+
+            <span class="fragment">Content-Security-Policy: default-src 'self' *.example.com</span>
+
+            <span class="fragment">Content-Security-Policy: default-src 'self'; img-src *;
+              style-src assets.example.com; script-src assets.example.com</span>
+
+            <span class="fragment">Content-Security-Policy: upgrade-insecure-requests; default-src 'self'</span>
+          </code></pre>
+        </figure>
+      </section>
+
+      <aside class="notes" data-markdown>
+        - 'self' doesn't allow subdomains
+        - upgrade-insecure-requests forces all http links to https
+      </aside>
+    </section>
+    <section>
+      <section>
+        <h2>Content Security Policy</h2>
+        <figure class="code">
+          <pre><code>
+            Content-Security-Policy-Report-Only: default-src 'self';
+              script-src 'self' 'unsafe-inline' code.jquery.com www.google.com www.google-analytics.com;
+              style-src 'self' 'unsafe-inline' netdna.bootstrapcdn.com www.google.com ajax.googleapis.com;
+              img-src 'self' s3.amazonaws.com www.google-analytics.com stats.g.doubleclick.net;
+              connect-src 'self' www.drupal.org www.google-analytics.com;
+              report-uri https://gapple.report-uri.io/r/default/csp/reportOnly;
+          </code></pre>
+        </figure>
+
+        <aside class="notes" data-markdown>
+          - Drupal 8 asset libraries could automate this header
+          - 448 chars
+          - Only set on HTML pages
+          - HPACK may help
+        </aside>
+      </section>
+      <section data-background-image="images/report-uri-io.png"></section>
+      <section>
+        <h2>Content Security Policy</h2>
+        <table class="browser-support">
+          <tr>
+            <th><i class="fa fa-firefox"></i></th>
+            <th><i class="fa fa-chrome"></i></th>
+            <th><i class="fa fa-internet-explorer"></i></th>
+            <th><i class="fa fa-safari"></i></th>
+          </tr>
+          <tr>
+            <td><i class="fa fa-check"></i></td>
+            <td><i class="fa fa-check"></i></td>
+            <td>10</td>
+            <td><i class="fa fa-check"></i></td>
+          </tr>
+        </table>
+      </section>
+    </section>
+    <section>
+      <section>
+        <h2>Subresource Integrity</h2>
+        <figure class="code">
+          <pre><code>
+            &lt;script src="https://example.com/example-framework.js"
+              integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC"&gt;&lt;/script&gt;
+          </code></pre>
+        </figure>
+
+        <aside class="notes" data-markdown>
+          - Currently SHA2 variants are allowed
+          - CSP header can require integrity hash
+        </aside>
+      </section>
+      <section>
+        <h2>Subresource Integrity</h2>
+        <table class="browser-support">
+          <tr>
+            <th><i class="fa fa-firefox"></i></th>
+            <th><i class="fa fa-chrome"></i></th>
+            <th><i class="fa fa-internet-explorer"></i></th>
+            <th><i class="fa fa-safari"></i></th>
+          </tr>
+          <tr>
+            <td><i class="fa fa-check"></i></td>
+            <td><i class="fa fa-check"></i></td>
+            <td><i class="fa fa-times"></i></td>
+            <td><i class="fa fa-times"></i></td>
+          </tr>
+        </table>
+      </section>
+    </section>
+    <section data-background-image="images/security-headers-io.png"></section>
+
+    <!-- TODO Compression (Brotli) -->
+
+    <section>
+      <section>
+        <h2>Progressive CSS</h2>
+        <figure class="code">
+          <pre><code class="lang-html" data-escape>
+            &lt;html&gt;
+              &lt;head&gt;
+                &lt;link rel="stylesheet" href="essential.css" /&gt;
+              &lt;/head&gt;
+              &lt;body&gt;
+                &lt;link rel="stylesheet" href="header.css" /&gt;
+                &lt;header&gt;&lt;/header&gt;
+
+                &lt;link rel="stylesheet" href="article.css" /&gt;
+                &lt;article&gt;&lt;/article&gt;
+
+                &lt;link rel="stylesheet" href="footer.css" /&gt;
+                &lt;footer&gt;&lt;/footer&gt;
+              &lt;/body&gt;
+            &lt;/html&gt;
+          </code></pre>
+        </figure>
+
+        <aside class="notes" data-markdown>
+          - CSS is currently blocking; all must finish
+          - Draft spec
+          - Render until CSS hit, wait for download, continue.
+        </aside>
+      </section>
+    </section>
+
+    <section>
+      <section>
+        <h2>Conditional Rules</h2>
+        <figure class="code">
+          <pre><code>
+            #about .projects a {
+              border-bottom: 1px solid rgba(51, 51, 51, 0.1);
+            }
+            #about .projects a:hover {
+              border-bottom: 1px solid rgba(51, 51, 51, 0.65);
+            }
+
+            <div class="fragment">@supports (text-decoration-color: rgba(51, 51, 51, 0.1)) {
+              #about .projects a {
+                border-bottom: none;
+                text-decoration: underline rgba(51, 51, 51, 0.1);
+              }
+              #about .projects a:hover {
+                border-bottom: none;
+                text-decoration: underline rgba(51, 51, 51, 0.65);
+              }
+            }</div>
+          </code></pre>
+        </figure>
+      </section>
+      <section>
+        <h2>Conditional Rules</h2>
+        <figure class="code">
+          <pre><code>
+            @supports (text-decoration-color: rgba(51, 51, 51, 0.1)) {
+              #about .projects a {
+                text-decoration: underline rgba(51, 51, 51, 0.1);
+              }
+              #about .projects a:hover {
+                text-decoration: underline rgba(51, 51, 51, 0.65);
+              }
+            }
+
+            @supports (not (text-decoration-color: rgba(51, 51, 51, 0.1))) {
+              #about .projects a {
+                border-bottom: 1px solid rgba(51, 51, 51, 0.1);
+              }
+              #about .projects a:hover {
+                border-bottom: 1px solid rgba(51, 51, 51, 0.65);
+              }
+            }
+          </code></pre>
+        </figure>
+      </section>
+      <section>
+        <h2>Conditional Rules</h2>
+        <table class="browser-support">
+          <tr>
+            <th><i class="fa fa-firefox"></i></th>
+            <th><i class="fa fa-chrome"></i></th>
+            <th><i class="fa fa-edge"></i></th>
+            <th><i class="fa fa-internet-explorer"></i></th>
+            <th><i class="fa fa-safari"></i></th>
+          </tr>
+          <tr>
+            <td><i class="fa fa-check"></i></td>
+            <td><i class="fa fa-check"></i></td>
+            <td><i class="fa fa-check"></i></td>
+            <td><i class="fa fa-times"></i></td>
+            <td>9</td>
+          </tr>
+        </table>
+      </section>
+    </section>
+
+    <!-- Flexbox -->
+    <section>
+      <section>
+        <h2>Flexbox</h2>
+        <table class="browser-support">
+          <tr>
+            <th><i class="fa fa-firefox"></i></th>
+            <th><i class="fa fa-chrome"></i></th>
+            <th><i class="fa fa-internet-explorer"></i></th>
+            <th><i class="fa fa-safari"></i></th>
+          </tr>
+          <tr>
+            <td><i class="fa fa-check"></i></td>
+            <td><i class="fa fa-check"></i></td>
+            <td>10*</td>
+            <td><i class="fa fa-check"></i></td>
+          </tr>
+        </table>
+        <aside class="notes">
+          - IE requires prefix until version 11
+        </aside>
+      </section>
+      <section>
+        <h2>Flexbox</h2>
+        <div class="flexbox-example inlinemenu no-flex">
+          <div class="menu-wrapper">
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+          </div>
+          <div class="menu-wrapper fragment">
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h2>Flexbox</h2>
+        <div class="flexbox-example inlinemenu with-flex">
+          <div class="menu-wrapper">
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+          </div>
+          <div class="menu-wrapper fragment">
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+            <span class="menu-item">Item</span>
+          </div>
+        </div>
+
+        <aside class="notes">
+          - Alignment (vertically center items!)
+          - Adjust direction / order
+        </aside>
+      </section>
+      <section>
+        <h2>Flexbox</h2>
+        <div class="flexbox-example featurebox no-flex">
+          <div class="flexbox-example__image">Image</div>
+          <div class="flexbox-example__text-wrapper">
+            <div class="flexbox-example__text">
+              Lorem Ipsum
+            </div>
+            <div class="flexbox-example__button">Button</div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h2>Flexbox</h2>
+        <div class="flexbox-example featurebox with-flex">
+          <div class="flexbox-example__image">Image</div>
+          <div class="flexbox-example__text-wrapper">
+            <div class="flexbox-example__text">
+              Lorem Ipsum
+            </div>
+            <div class="flexbox-example__button">Button</div>
+          </div>
+        </div>
+      </section>
+      <section class="center">
+        <div class="streams-figure h2">
+          <div class="endpoint"><i class="fa fa-desktop"></i></div>
+          <div class="transfer">
+            <div class="connection">
+              <div class="requests">
+                <i class="fa fa-arrow-right"></i>
+                <div class="frame">
+                  <div class="type"></div>
+                  <div class="content">GET /index.html</div>
+                  <div class="streamid">1</div>
+                </div>
+                <div class="frame">
+                  <div class="type"></div>
+                  <div class="content">GET /style.css</div>
+                  <div class="streamid">3</div>
+                </div>
+                <div class="frame">
+                  <div class="type"></div>
+                  <div class="content">GET /scripts.js</div>
+                  <div class="streamid">5</div>
+                </div>
+                <div class="frame">
+                  <div class="type"></div>
+                  <div class="content">GET /image1.png</div>
+                  <div class="streamid">7</div>
+                </div>
+              </div>
+              <div class="responses">
+                <i class="fa fa-arrow-left"></i>
+                <div class="frame">
+                  <div class="type">Headers</div>
+                  <div class="content">index.html</div>
+                  <div class="streamid">2</div>
+                </div>
+                <div class="frame">
+                  <div class="type">Data</div>
+                  <div class="content">index.html</div>
+                  <div class="streamid">2</div>
+                </div>
+                <div class="frame">
+                  <div class="type">Headers</div>
+                  <div class="content">style.css</div>
+                  <div class="streamid">4</div>
+                </div>
+                <div class="frame">
+                  <div class="type">Data</div>
+                  <div class="content">style.css</div>
+                  <div class="streamid">4</div>
+                </div>
+                <div class="frame">
+                  <div class="type">Headers</div>
+                  <div class="content">scripts.js</div>
+                  <div class="streamid">6</div>
+                </div>
+                <div class="frame">
+                  <div class="type">Data</div>
+                  <div class="content">scripts.js</div>
+                  <div class="streamid">6</div>
+                </div>
+                <div class="frame">
+                  <div class="type">Headers</div>
+                  <div class="content">image1.png</div>
+                  <div class="streamid">8</div>
+                </div>
+                <div class="frame">
+                  <div class="type">Data [0]</div>
+                  <div class="content">image1.png</div>
+                  <div class="streamid">8</div>
+                </div>
+                <div class="frame">
+                  <div class="type">Data [1]</div>
+                  <div class="content">image1.png</div>
+                  <div class="streamid">8</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="endpoint"><i class="fa fa-server"></i></div>
+        </div>
+
+        <aside class="notes" data-markdown>
+          - Vertically centered icons
+          - Reverse order of request blocks
+          - Stretch to fit space
+        </aside>
+      </section>
+      <section data-background-image="images/css-tricks-flexbox-pt1.png"></section>
+      <section data-background-image="images/css-tricks-flexbox-pt2.png"></section>
+      <section data-background-image="images/flexbox-froggy.png"></section>
+      <section data-background-image="images/flexbox-defense.png"></section>
+    </section>
+
+    <section>
+      <section>
+        <h2>CSS Grids</h2>
+        <table class="browser-support">
+          <tr>
+            <th><i class="fa fa-firefox"></i></th>
+            <th><i class="fa fa-chrome"></i></th>
+            <th><i class="fa fa-internet-explorer"></i></th>
+            <th><i class="fa fa-safari"></i></th>
+          </tr>
+          <tr>
+            <td>52</td>
+            <td>57</td>
+            <td><i class="fa fa-times"></i></td>
+            <td style="font-size: 50px">Nightly*</td>
+          </tr>
+        </table>
+      </section>
+      <section data-background-image="images/jen-simmons-mondrian.png"></section>
+      <section data-background="#fff">
+        <img src="images/jen-simmons-mondrian-mobile.png" style="height: 680px" />
+      </section>
+      <section data-background-image="images/jen-simmons-spacejam.png"></section>
+    </section>
+
+      <!-- TODO Grids -->
+      <!-- TODO Getting rid of jQuery -->
+
+    <section>
+      <section id="resources" class="center">
+        <ul>
+          <li>https://letsencrypt.org</li>
+          <li>https://badssl.com/</li>
+          <li>https://www.ssllabs.com/ssltest/</li>
+          <li>https://securityheaders.io/</li>
+          <li>https://report-uri.io</li>
+          <li>http://youmightnotneedjquery.com/</li>
+        </ul>
+      </section>
+      <section id="references-h2" class="center">
+        <ul>
+          <li>https://speakerdeck.com/dshafik/2-and-asynchronous-apis-8</li>
+          <li>https://speakerdeck.com/summerwind/2-prioritization</li>
+          <li>https://events.drupal.org/dublin2016/sessions/http2-what-no-one-telling-you</li>
+          </ul>
+      </section>
+      <section id="references-browser" class="center">
+        <ul>
+          <li>https://security.googleblog.com/2016/09/moving-towards-more-secure-web.html</li>
+          <li>https://scotthelme.co.uk/a-new-security-header-referrer-policy/</li>
+        </ul>
+      </section>
+      <section id="references-css" class="center">
+        <ul>
+          <li>https://jakearchibald.com/2016/link-in-body/</li>
+          <li>https://css-tricks.com/snippets/css/a-guide-to-flexbox/</li>
+          <li>http://labs.jensimmons.com/</li>
+        </ul>
+      </section>
+    </section>
+    <section id="source" class="center">
+      <ul>
+        <li><a href="https://gapple.github.io/presentation-web-future">https://gapple.github.io/presentation-web-future</a></li>
+        <li><a href="https://github.com/gapple/presentation-web-future">https://github.com/gapple/presentation-web-future</a></li>
+      </ul>
     </section>
   </div>
 </div>
